@@ -37,6 +37,6 @@ def server_error(e):
 
 if __name__ == '__main__':
     # This is used when running locally. Gunicorn is used to run the
-    # application on Google App Engine. See entrypoint in app.yaml.
+    # application on Google App Engine. See entrypoint in flask.yaml.
     socketio.run(app)
-    # app.run(host='127.0.0.1', port=8080, debug=True)
+    # flask.run(host='127.0.0.1', port=8080, debug=True)
