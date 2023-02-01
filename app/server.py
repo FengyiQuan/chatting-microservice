@@ -1,6 +1,6 @@
 import logging
-import flask
-from flask import Flask, render_template
+# import flask
+from flask import Flask, render_template, request, redirect, url_for
 from flask_socketio import SocketIO, emit
 import flask_login
 from .models.User import User
@@ -23,18 +23,18 @@ def hello():
 
 @app.route('/user/login', methods=['GET', 'POST'])
 def login():
-    if flask.request.method == 'GET':
+    if request.method == 'GET':
         print(True)
         return render_template('user/login.html')
 
-    email = flask.request.form['username']
-    if email in users and flask.request.form['password'] == users[email]['password']:
+    email = request.form['username']
+    if email in users and request.form['password'] == users[email]['password']:
         # print(True)
         user = User()
         # print(False)
         user.id = email
         flask_login.login_user(user)
-        return flask.redirect(flask.url_for('protected'))
+        return redirect(url_for('protected'))
     else:
         print(True)
         return 'Bad login'
