@@ -1,0 +1,10 @@
+version: 1.0
+runtime: python3
+build:
+  commands:
+    build:
+    - pip install -r ./app/requirements.txt
+run:
+  command: python server.py
+  network:
+    port: 8080
