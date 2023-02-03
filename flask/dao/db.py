@@ -1,4 +1,5 @@
-from ..models.User import User
+from models.User import User
+
 from pymongo import MongoClient, DESCENDING
 from werkzeug.security import generate_password_hash
 from bson import ObjectId

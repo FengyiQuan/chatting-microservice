@@ -1,13 +1,15 @@
 import logging
 # import flask
 from datetime import datetime
-from flask import Flask, flash, render_template, request, redirect, url_for, abort
-from flask_socketio import SocketIO, emit
-from flask_login import logout_user, login_required, current_user, LoginManager, login_user, UserMixin
-from .dao.db import save_user, get_user_by_username, get_user_by_id
+
+from flask import Flask, flash, render_template, request, redirect, url_for
+from flask_login import logout_user, login_required, current_user, LoginManager, login_user
+from flask_socketio import SocketIO, join_room, leave_room
 from pymongo.errors import DuplicateKeyError
+
+from dao.db import save_user, get_user_by_username, get_user_by_id
+
 # from is_safe_url import is_safe_url
-from .models.User import User
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
@@ -103,6 +105,9 @@ def handle_send_message_event(data):
     app.logger.info("{} has sent message to the room {}: {}".format(data['username'],
                                                                     data['room'],
                                                                     data['message']))
+    print("{} has sent message to the room {}: {}".format(data['username'],
+                                                          data['room'],
+                                                          data['message']))
     data['created_at'] = datetime.now().strftime("%d %b, %H:%M")
     data['room'] = room
     # save_message(data['room'], data['message'], data['username'])
@@ -112,8 +117,10 @@ def handle_send_message_event(data):
 @socketio.on('join_room')
 def handle_join_room_event(data):
     app.logger.info("{} has joined the room {}".format(data['username'], data['room']))
+
     data['room'] = room
-    # join_room(data['room'])
+    print("{} has joined the room {}".format(data['username'], data['room']))
+    join_room(data['room'])
     socketio.emit('join_room_announcement', data, room=data['room'])
 
 
@@ -121,7 +128,8 @@ def handle_join_room_event(data):
 def handle_leave_room_event(data):
     app.logger.info("{} has left the room {}".format(data['username'], data['room']))
     data['room'] = room
-    # leave_room(data['room'])
+    print("{} has left the room {}".format(data['username'], data['room']))
+    leave_room(data['room'])
     socketio.emit('leave_room_announcement', data, room=data['room'])
 
 
@@ -141,7 +149,7 @@ def server_error(e):
 
 @login_manager.user_loader
 def load_user(user_id):
-    print(user_id)
+    # print(user_id)
     user = get_user_by_id(user_id)
     # print(user)
     return user
