@@ -1,77 +1,133 @@
 import logging
 # import flask
-from flask import Flask, render_template, request, redirect, url_for
+from datetime import datetime
+from flask import Flask, flash, render_template, request, redirect, url_for, abort
 from flask_socketio import SocketIO, emit
-import flask_login
+from flask_login import logout_user, login_required, current_user, LoginManager, login_user, UserMixin
+from .dao.db import save_user, get_user_by_username, get_user_by_id
+from pymongo.errors import DuplicateKeyError
+# from is_safe_url import is_safe_url
 from .models.User import User
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
-login_manager = flask_login.LoginManager()
-login_manager.init_app(app)
-
 socketio = SocketIO(app)
-
-users = {'test': {'password': 'test'}}
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+room = 'general'  # only one room for now
 
 
 @app.route('/')
-def hello():
+def index():
     """Return a friendly HTTP greeting."""
     return render_template('index.html')
 
 
 @app.route('/user/login', methods=['GET', 'POST'])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+
     if request.method == 'GET':
-        print(True)
-        return render_template('user/login.html')
-
-    email = request.form['username']
-    if email in users and request.form['password'] == users[email]['password']:
-        # print(True)
-        user = User()
-        # print(False)
-        user.id = email
-        flask_login.login_user(user)
-        return redirect(url_for('protected'))
+        return render_template('auth/login.html')
     else:
-        print(True)
-        return 'Bad login'
+        username = request.form['username']
+        password = request.form['password']
+        user = get_user_by_username(username)
+        if user and user.check_password(password):
+            login_user(user)
+            # print('login successful')
+            next = request.args.get('next')
+            # if True or not is_safe_url(next):
+            #     return abort(400)
+            return redirect(next or url_for('index'))
+        else:
+            flash('Invalid username or password', 'danger')
+            return redirect(url_for('login'))
 
 
-@login_manager.user_loader
-def user_loader(email):
-    if email not in users:
-        return
+@app.route('/user/register', methods=['GET', 'POST'])
+def signup():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
 
-    user = User()
-    user.id = email
+    if request.method == 'GET':
+        return render_template('auth/signup.html')
+    else:
+        username = request.form['username']
+        email = request.form['email']
+        password = request.form['password']
+        password2 = request.form['password2']
+        user = get_user_by_username(username)
+        if password != password2:
+            flash('Passwords do not match', 'danger')
+            return redirect(url_for('signup'))
+        if user:
+            flash('User already exists', 'danger')
+            return redirect(url_for('signup'))
+        else:
+            try:
+                save_user(username, email, password)
+                flash('Please sign in', 'success')
+                return redirect(url_for('login'))
+            except DuplicateKeyError:
+                flash('User already exists', 'danger')
+                return redirect(url_for('signup'))
 
-    return user
 
-
-@app.route('/protected')
-@flask_login.login_required
-def protected():
-    return 'Logged in as: ' + flask_login.current_user.id
-
-
-@app.route('/logout')
+@app.route("/logout", methods=['POST'])
+@login_required
 def logout():
-    flask_login.logout_user()
-    return 'Logged out'
+    logout_user()
+    return redirect(url_for('index'))
+
+
+@app.route('/rooms/<room_id>/', methods=['GET'])
+@login_required
+def view_room(room_id):
+    # room = get_room(room_id)
+    # if room:  # and is_room_member(room_id, current_user.username):
+    # room_members = get_room_members(room_id)
+    # messages = get_messages(room_id)
+    return render_template('chatroom/view_room.html', username=current_user.username, room=room)
+    # room_members=room_members)
+    # messages=messages)
+    # else:
+    #     return "Room not found", 404
+
+
+# sockerio events
+@socketio.on('send_message')
+def handle_send_message_event(data):
+    app.logger.info("{} has sent message to the room {}: {}".format(data['username'],
+                                                                    data['room'],
+                                                                    data['message']))
+    data['created_at'] = datetime.now().strftime("%d %b, %H:%M")
+    data['room'] = room
+    # save_message(data['room'], data['message'], data['username'])
+    socketio.emit('receive_message', data, room=data['room'])
+
+
+@socketio.on('join_room')
+def handle_join_room_event(data):
+    app.logger.info("{} has joined the room {}".format(data['username'], data['room']))
+    data['room'] = room
+    # join_room(data['room'])
+    socketio.emit('join_room_announcement', data, room=data['room'])
+
+
+@socketio.on('leave_room')
+def handle_leave_room_event(data):
+    app.logger.info("{} has left the room {}".format(data['username'], data['room']))
+    data['room'] = room
+    # leave_room(data['room'])
+    socketio.emit('leave_room_announcement', data, room=data['room'])
 
 
 @login_manager.unauthorized_handler
 def unauthorized_handler():
     return 'Unauthorized', 401
-
-
-@socketio.on('newMessage')
-def handle_message(new_message):
-    print('received message: ' + new_message)
-    socketio.emit('newMessage', new_message)
 
 
 @app.errorhandler(500)
@@ -81,6 +137,14 @@ def server_error(e):
     An internal error occurred: <pre>{}</pre>
     See logs for full stacktrace.
     """.format(e), 500
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    print(user_id)
+    user = get_user_by_id(user_id)
+    # print(user)
+    return user
 
 
 if __name__ == '__main__':
