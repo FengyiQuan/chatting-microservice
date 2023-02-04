@@ -1,5 +1,6 @@
 # uvicorn==0.20.0
 flask
+waitress
 # gunicorn==20.1.0
 # flask_socketio
 # flask_login==0.6.2
