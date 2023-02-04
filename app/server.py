@@ -4,8 +4,8 @@ from datetime import datetime
 
 from flask import Flask, flash, render_template, request, redirect, url_for
 # from flask_login import logout_user, login_required, current_user, LoginManager, login_user
-from flask_socketio import SocketIO, join_room, leave_room
-from pymongo.errors import DuplicateKeyError
+# from flask_socketio import SocketIO, join_room, leave_room
+# from pymongo.errors import DuplicateKeyError
 
 # from dao.db import save_user, get_user_by_username, get_user_by_id
 
@@ -13,7 +13,7 @@ from pymongo.errors import DuplicateKeyError
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
-socketio = SocketIO(app)
+# socketio = SocketIO(app)
 # login_manager = LoginManager()
 # login_manager.init_app(app)
 # login_manager.login_view = 'login'
