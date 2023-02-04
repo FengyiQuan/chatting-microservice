@@ -16,7 +16,7 @@ try:
 except pymongo.errors.ConnectionFailure:
     print("Failed to connect to server {}".format('mongodb://127.0.0.1:27017'))
 
-print(client)
+# print(client)
 
 chat_db = client.get_database("ChatDB")
 users_collection = chat_db.get_collection("users")

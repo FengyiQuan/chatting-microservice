@@ -1,0 +1,26 @@
+Type: AWS::AppRunner::Service
+Properties:
+  ServiceName: python-app
+  SourceConfiguration:
+    AuthenticationConfiguration:
+      ConnectionArn: "arn:aws:apprunner:us-east-1:112573511757:connection/chat-flask-connection/f8ae57a14e754594bc4d69296697b2f2"
+    AutoDeploymentsEnabled: true
+    CodeRepository:
+      RepositoryUrl: "https://github.com/FengyiQuan/chatting-microservice/test"
+      SourceCodeVersion:
+        Type: BRANCH
+        Value: test
+      CodeConfiguration:
+        ConfigurationSource: API
+        CodeConfigurationValues:
+          Runtime: PYTHON_3
+          BuildCommand: "pip install -r app/requirements.txt"
+          StartCommand: "gunicorn --worker-class eventlet -w 1 app.server:app"
+          Port: 80
+#          RuntimeEnvironmentVariables:
+#            -
+#              Name: NAME
+#              Value: Jane
+  InstanceConfiguration:
+    Cpu: 2 vCPU
+    Memory: 4 GB
