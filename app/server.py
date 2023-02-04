@@ -7,7 +7,7 @@ from flask import Flask, flash, render_template, request, redirect, url_for
 from flask_login import logout_user, login_required, current_user, LoginManager, login_user
 from flask_socketio import SocketIO, join_room, leave_room
 from flask_sessionstore import Session
-# from pymongo.errors import DuplicateKeyError
+from pymongo.errors import DuplicateKeyError
 
 from .dao.db import client, save_user, get_user_by_username, get_user_by_id
 
