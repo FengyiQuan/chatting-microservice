@@ -2,26 +2,32 @@ import logging
 # import flask
 from datetime import datetime
 
-
 from flask import Flask, flash, render_template, request, redirect, url_for
 
 from flask_login import logout_user, login_required, current_user, LoginManager, login_user
 from flask_socketio import SocketIO, join_room, leave_room
-
+from flask_sessionstore import Session
 # from pymongo.errors import DuplicateKeyError
 
-from .dao.db import save_user, get_user_by_username, get_user_by_id
+from .dao.db import client, save_user, get_user_by_username, get_user_by_id
 
 # from is_safe_url import is_safe_url
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
-
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "mongodb"
+app.config["SESSION_MONGODB"] = client
+app.config["SESSION_MONGODB_DB"] = 'ChatDB'
+app.config["SESSION_MONGODB_COLLECT"] = 'sessions'
+Session(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+
+
 # room = 'general'  # only one room for now
 
 
@@ -109,26 +115,32 @@ def view_room(room_id):
 # socketio events
 @socketio.on('send_message')
 def handle_send_message_event(data):
-    app.logger.info("{} has sent message to the room {}: {}".format(data['username'],
-                                                                    data['room'],
-                                                                    data['message']))
-    print("{} has sent message to the room {}: {}".format(data['username'],
-                                                          data['room'],
-                                                          data['message']))
-    data['created_at'] = datetime.now().strftime("%d %b, %H:%M")
-    # data['room'] = room
-    # save_message(data['room'], data['message'], data['username'])
-    socketio.emit('receive_message', data, room=data['room'])
+    if current_user.is_authenticated:
+        app.logger.info("{} has sent message to the room {}: {}".format(data['username'],
+                                                                        data['room'],
+                                                                        data['message']))
+        print("{} has sent message to the room {}: {}".format(data['username'],
+                                                              data['room'],
+                                                              data['message']))
+        data['created_at'] = datetime.now().strftime("%d %b, %H:%M")
+        # data['room'] = room
+        # save_message(data['room'], data['message'], data['username'])
+        socketio.emit('receive_message', data, room=data['room'], broadcast=True)
+    else:
+        print('not authenticated')
 
 
 @socketio.on('join_room')
 def handle_join_room_event(data):
-    app.logger.info("{} has joined the room {}".format(data['username'], data['room']))
+    if current_user.is_authenticated:
+        app.logger.info("{} has joined the room {}".format(data['username'], data['room']))
 
-    # data['room'] = room
-    print("{} has joined the room {}".format(data['username'], data['room']))
-    join_room(data['room'])
-    socketio.emit('join_room_announcement', data, room=data['room'])
+        # data['room'] = room
+        print("{} has joined the room {}".format(data['username'], data['room']))
+        join_room(data['room'])
+        socketio.emit('join_room_announcement', data, room=data['room'])
+    else:
+        print('not authenticated')
 
 
 @socketio.on('leave_room')
