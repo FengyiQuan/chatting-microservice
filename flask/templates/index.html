@@ -21,18 +21,11 @@
 
 </head>
 <body>
-{% if current_user.is_authenticated %}
-    <p>You are logged in!</p>
-    <h1>Username: {{ current_user.username }} </h1>
-    <h1>UserId: {{ current_user._id }}</h1>
-    <form action="/logout" method="POST">
-        <button type="submit">Log Out</button>
-    </form>
+
+
      <button><a href="/rooms/default">Join room</a></button>
-{% else %}
-    <p>You are not logged in!</p>
-    <button><a href="/user/login">Login</a></button>
-{% endif %}
+
+
 
 {#<div class="container">#}
 {#    <ul class="list-group" id="messages-container">#}
