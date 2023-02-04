@@ -3,6 +3,7 @@ import logging
 from datetime import datetime
 
 from flask import Flask, flash, render_template, request, redirect, url_for
+
 # from flask_login import logout_user, login_required, current_user, LoginManager, login_user
 # from flask_socketio import SocketIO, join_room, leave_room
 # from pymongo.errors import DuplicateKeyError
@@ -93,10 +94,10 @@ def index():
 #     # room_members = get_room_members(room_id)
 #     # messages = get_messages(room_id)
 #     return render_template('chatroom/view_room.html', room=room)
-    # room_members=room_members)
-    # messages=messages)
-    # else:
-    #     return "Room not found", 404
+# room_members=room_members)
+# messages=messages)
+# else:
+#     return "Room not found", 404
 
 
 # socketio events
@@ -156,8 +157,8 @@ def index():
 
 
 # if __name__ == '__main__':
-    # import uvicorn
-    # uvicorn.run("server:app", host="0.0.0.0", port=8080, log_level="info")
+# import uvicorn
+# uvicorn.run("server:app", host="0.0.0.0", port=8080, log_level="info")
 
-if __name__=='__main__':
+if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000)
