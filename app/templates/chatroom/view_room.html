@@ -12,9 +12,9 @@
 {% extends 'base.html' %}
 {% block js_block %}
     <script>
-        const username = '{{ current_user.username }}'
-        const roomId = "{{ room._id }}"
+        const roomId = '{{ room }}';
     </script>
+
     {#    <script defer type="application/javascript" src="/js/socket-client.js"></script>#}
     <script defer type="application/javascript" src="{{ url_for('static', filename='js/socket-client.js') }}"></script>
 
@@ -243,6 +243,13 @@
                             <i class="fas fa-paperclip"></i>
                         </button>
                     </div>
+                    <label for="name-input"></label>
+                    <input
+                            type="text"
+                            class="form-control border-0"
+                            id="name-input"
+                            placeholder="Your name.."
+                    />
                     <label for="message-input"></label>
                     <input
                             type="text"

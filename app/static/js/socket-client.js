@@ -2,6 +2,7 @@ const socket = io();
 const messageInput = document.getElementById("message-input");
 const nameInput = document.getElementById("name-input");
 const messageContainer = document.getElementById("messages-container");
+const username = nameInput.value;
 const sendMsg = () => {
     const messageContent = messageInput.value.trim();
     socket.emit("send_message", {
