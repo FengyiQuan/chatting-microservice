@@ -5,6 +5,6 @@ build:
     build:
     - pip install -r ./flask/requirements.txt
 run:
-  command: python ./flask/server.py
+  command: flask --app ./flask/server run
   network:
     port: 8080
