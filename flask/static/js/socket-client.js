@@ -53,7 +53,7 @@ const scrollToBottom = (id) => {
 const renderNewMsg = (newMsg) => {
     const newMsgCard = document.createElement("li");
     newMsgCard.classList.add("list-group-item");
-    newMsgCard.innerHTML = `${newMsg.message}`;
+    newMsgCard.innerHTML = `${newMsg.username}: ${newMsg.message}`;
     messageContainer.appendChild(newMsgCard);
     scrollToBottom("messages-container");
 };

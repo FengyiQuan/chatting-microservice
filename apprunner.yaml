@@ -3,8 +3,8 @@ runtime: python3
 build:
   commands:
     build:
-    - pip install -r ./app/requirements.txt
+    - pip install -r ./flask/requirements.txt
 run:
-  command: python server.py
+  command: python ./flask/server.py
   network:
     port: 8080

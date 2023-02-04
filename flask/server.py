@@ -160,3 +160,7 @@ if __name__ == '__main__':
     # application on Google App Engine. See entrypoint in app.yaml.
     socketio.run(app)
     # app.run(host='127.0.0.1', port=8080, debug=True)
+
+
+# if __name__=='__main__':
+#     app.run(host="0.0.0.0", port=5000)

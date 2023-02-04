@@ -3,8 +3,18 @@ from models.User import User
 from pymongo import MongoClient, DESCENDING
 from werkzeug.security import generate_password_hash
 from bson import ObjectId
+import pymongo
 
-client = MongoClient("mongodb://localhost:27017/")
+try:
+    client = MongoClient(host='test_mongodb',
+                         port=27017,
+                         username='root',
+                         password='pass',
+                         authSource="admin")
+except pymongo.errors.ConnectionFailure:
+    print("Failed to connect to server {}".format('mongodb://127.0.0.1:27017'))
+
+print(client)
 
 chat_db = client.get_database("ChatDB")
 users_collection = chat_db.get_collection("users")
