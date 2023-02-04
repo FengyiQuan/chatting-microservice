@@ -5,6 +5,7 @@ build:
     build:
     - pip install -r ./flask/requirements.txt
 run:
-  command: flask --app ./flask/server run
+  runtime-version: 3.8
+  command: uvicorn --host 0.0.0.0 --port 8080 --log-level info main:app
   network:
     port: 8080
