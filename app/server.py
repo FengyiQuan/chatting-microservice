@@ -16,10 +16,12 @@ from flask_socketio import SocketIO, join_room, leave_room
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
+
+
 # login_manager = LoginManager()
 # login_manager.init_app(app)
 # login_manager.login_view = 'login'
-room = 'general'  # only one room for now
+# room = 'general'  # only one room for now
 
 
 @app.route('/')
@@ -87,7 +89,7 @@ def index():
 #     return redirect(url_for('index'))
 
 
-@app.route('/rooms/<room_id>/', methods=['GET'])
+@app.route('/rooms/<room_id>', methods=['GET'])
 # @login_required
 def view_room(room_id):
     # room = get_room(room_id)
@@ -113,7 +115,7 @@ def handle_send_message_event(data):
                                                           data['room'],
                                                           data['message']))
     data['created_at'] = datetime.now().strftime("%d %b, %H:%M")
-    data['room'] = room
+    # data['room'] = room
     # save_message(data['room'], data['message'], data['username'])
     socketio.emit('receive_message', data, room=data['room'])
 
@@ -122,7 +124,7 @@ def handle_send_message_event(data):
 def handle_join_room_event(data):
     app.logger.info("{} has joined the room {}".format(data['username'], data['room']))
 
-    data['room'] = room
+    # data['room'] = room
     print("{} has joined the room {}".format(data['username'], data['room']))
     join_room(data['room'])
     socketio.emit('join_room_announcement', data, room=data['room'])
@@ -131,7 +133,7 @@ def handle_join_room_event(data):
 @socketio.on('leave_room')
 def handle_leave_room_event(data):
     app.logger.info("{} has left the room {}".format(data['username'], data['room']))
-    data['room'] = room
+    # data['room'] = room
     print("{} has left the room {}".format(data['username'], data['room']))
     leave_room(data['room'])
     socketio.emit('leave_room_announcement', data, room=data['room'])
@@ -161,5 +163,6 @@ def handle_leave_room_event(data):
 
 if __name__ == '__main__':
     # from waitress import serve
-    socketio.run(app)
+    # socketio.run(app)
+    socketio.run(app, host='0.0.0.0', port=80)
     # serve(socketio, host="0.0.0.0", port=8080)

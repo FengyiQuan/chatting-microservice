@@ -10,4 +10,4 @@ run:
 #  command: gunicorn -w 1 'app.server:app'
 #  command: gunicorn --worker-class eventlet -w 1 'app.server:app'
   network:
-    port: 8080
+    port: 80
