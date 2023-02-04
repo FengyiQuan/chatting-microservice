@@ -1,9 +1,9 @@
 # uvicorn==0.20.0
 flask
 gunicorn
-flask_socketio
+# flask_socketio
 # flask_login==0.6.2
-eventlet
+eventlet==0.30.2
 # pymongo==4.3.3
 # werkzeug==2.2.2
 # pytest==7.2.1
