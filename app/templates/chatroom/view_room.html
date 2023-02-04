@@ -12,6 +12,7 @@
 {% extends 'base.html' %}
 {% block js_block %}
     <script>
+        const username = '{{ current_user.username }}';
         const roomId = '{{ room }}';
     </script>
 
@@ -243,13 +244,13 @@
                             <i class="fas fa-paperclip"></i>
                         </button>
                     </div>
-                    <label for="name-input"></label>
-                    <input
-                            type="text"
-                            class="form-control border-0"
-                            id="name-input"
-                            placeholder="Your name.."
-                    />
+{#                    <label for="name-input"></label>#}
+{#                    <input#}
+{#                            type="text"#}
+{#                            class="form-control border-0"#}
+{#                            id="name-input"#}
+{#                            placeholder="Your name.."#}
+{#                    />#}
                     <label for="message-input"></label>
                     <input
                             type="text"
