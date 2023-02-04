@@ -4,10 +4,10 @@ EXPOSE 8080
 
 WORKDIR /app
 
-COPY app/requirements.txt /app/
+COPY requirements.txt /app/
 
 RUN pip install -r requirements.txt
 
-COPY app/server.py /app/
+COPY server.py /app/
 
 CMD [ "python",  "server.py"]

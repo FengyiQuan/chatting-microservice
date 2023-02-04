@@ -86,14 +86,16 @@ def index():
 #     return redirect(url_for('index'))
 
 
-# @app.route('/rooms/<room_id>/', methods=['GET'])
-# # @login_required
-# def view_room(room_id):
-#     # room = get_room(room_id)
-#     # if room:  # and is_room_member(room_id, current_user.username):
-#     # room_members = get_room_members(room_id)
-#     # messages = get_messages(room_id)
-#     return render_template('chatroom/view_room.html', room=room)
+@app.route('/rooms/<room_id>/', methods=['GET'])
+# @login_required
+def view_room(room_id):
+    # room = get_room(room_id)
+    # if room:  # and is_room_member(room_id, current_user.username):
+    # room_members = get_room_members(room_id)
+    # messages = get_messages(room_id)
+    return render_template('chatroom/view_room.html', room=room)
+
+
 # room_members=room_members)
 # messages=messages)
 # else:
