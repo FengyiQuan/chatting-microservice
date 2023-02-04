@@ -6,7 +6,7 @@ build:
       - pip install -r app/requirements.txt
 run:
   runtime-version: 3.8
-  command: python app/server.py
+  command: gunicorn --worker-class eventlet -w 1 app.server:app
 #  command: gunicorn -w 1 'app.server:app'
 #  command: gunicorn --worker-class eventlet -w 1 'app.server:app'
   network:
