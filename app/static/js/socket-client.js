@@ -1,10 +1,12 @@
 const socket = io();
 const messageInput = document.getElementById("message-input");
-const nameInput = document.getElementById("name-input");
+
 const messageContainer = document.getElementById("messages-container");
-const username = nameInput.value;
+
 const sendMsg = () => {
     const messageContent = messageInput.value.trim();
+    // const nameInput = document.getElementById("name-input");
+    // const username = nameInput.value;
     socket.emit("send_message", {
         username,
         room: roomId,
@@ -14,6 +16,8 @@ const sendMsg = () => {
     messageInput.value = "";
 };
 socket.on('connect', function () {
+    // const nameInput = document.getElementById("name-input");
+    // const username = nameInput.value;
     socket.emit('join_room', {
         username,
         room: roomId
@@ -37,6 +41,8 @@ socket.on('leave_room_announcement', function (data) {
 });
 
 window.onbeforeunload = function () {
+    // const nameInput = document.getElementById("name-input");
+    // const username = nameInput.value;
     socket.emit('leave_room', {
         username,
         room: roomId

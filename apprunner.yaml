@@ -6,6 +6,8 @@ build:
       - pip install -r app/requirements.txt
 run:
   runtime-version: 3.8
-  command: gunicorn --worker-class eventlet -w 1 'app.server:app'
+  command: gunicorn --worker-class eventlet -w 1 app.server:app
+#  command: gunicorn -w 1 'app.server:app'
+#  command: gunicorn --worker-class eventlet -w 1 'app.server:app'
   network:
-    port: 8080
+    port: 80
