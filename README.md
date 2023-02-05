@@ -49,6 +49,7 @@ experience.
 ## Demo
 
 Application is deployed on [AWS](https://s2z35ykgqb.us-east-1.awsapprunner.com/)
+![image](https://github.com/FengyiQuan/chatting-microservice/blob/main/img/example1.png)
 
 ## Done
 
@@ -60,4 +61,4 @@ Application is deployed on [AWS](https://s2z35ykgqb.us-east-1.awsapprunner.com/)
   Containerization is optional, but recommended
 
 ## License
-[MIT License]()
+[MIT License](https://github.com/FengyiQuan/chatting-microservice/blob/main/LICENSE)
