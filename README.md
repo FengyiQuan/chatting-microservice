@@ -1,3 +1,5 @@
+![](https://img.shields.io/badge/Amazon_AWS-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white)
+
 # Chat System
 
 Cloud Continuous Delivery of Flask Microservices: online chatting system
